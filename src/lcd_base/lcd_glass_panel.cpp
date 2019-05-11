@@ -5,9 +5,10 @@
 #include <QPaintEvent>
 #include <QGridLayout>
 
-#define BLOCK_SPACING_HORIZONTAL (.62 * ZOOM_FACTOR)
-#define BLOCK_SPACING_VERTICAL (.7 * ZOOM_FACTOR)
-#define SCREEN_MARGIN (13 * ZOOM_FACTOR)
+#define BLOCK_SPACING_HORIZONTAL .62
+#define BLOCK_SPACING_VERTICAL .7
+#define SCREEN_MARGIN_HORIZONTAL 6.95
+#define SCREEN_MARGIN_VERTICAL 1.75
 
 LCDGlassPanel::LCDGlassPanel(int w, int h, QWidget* parent)
 	: QWidget(parent),
@@ -24,12 +25,11 @@ LCDGlassPanel::LCDGlassPanel(int w, int h, QWidget* parent)
 			//block->move(SCREEN_MARGIN + c * block->sizeHint().width() + (c - 1) * BLOCK_MARGIN,
 			//	SCREEN_MARGIN + r * block->sizeHint().height() + (r - 1) * BLOCK_MARGIN);
 			l->addWidget(block, r, c);
-			block->setSymbol(r * 20 + c + 'a');
 		}
-	}/*
+	}
 	l->setHorizontalSpacing(NORMALIZE_X(BLOCK_SPACING_HORIZONTAL));
 	l->setVerticalSpacing(NORMALIZE_Y(BLOCK_SPACING_VERTICAL));
-	l->setMargin(SCREEN_MARGIN);*/
+	l->setContentsMargins(NORMALIZE_X(SCREEN_MARGIN_HORIZONTAL), NORMALIZE_Y(SCREEN_MARGIN_VERTICAL), NORMALIZE_X(SCREEN_MARGIN_HORIZONTAL), NORMALIZE_Y(SCREEN_MARGIN_VERTICAL));
 
 	setLayout(l);
 	//for (int i = 0; i < __pin_count; ++i) {
@@ -38,12 +38,22 @@ LCDGlassPanel::LCDGlassPanel(int w, int h, QWidget* parent)
 	//	pin->move(calculatePinPosition(i));
 	//	connect(pin, SIGNAL(signalChanged(bool)), this, SLOT(pinSignalChanged()));
 	//}
-	setFixedSize(0, 0);
+	//setFixedSize(0, 0);
 }
 
-uint64_t LCDGlassPanel::getSymbol(char symb)
+
+
+LCDGlassPanel::~LCDGlassPanel()
 {
-	switch (symb) 
+	//for (Pin* pin : __pin_array)
+	//	delete pin;
+	for (LCDGlassPanelBlock5x8* block : __blocks)
+		delete block;
+}
+
+uint64_t LCDGlassPanel::getSymbol(char ch)
+{
+	switch (ch)
 	{
 		// CUSTOM CHARS 0x00 - 0x0F
 	case 0:
@@ -61,7 +71,7 @@ uint64_t LCDGlassPanel::getSymbol(char symb)
 	case 12:
 	case 13:
 	case 14:
-	case 15: return getCustomSymbol(symb % 8);
+	case 15: return getCustomSymbol(ch);
 
 		// SYMBOLS
 	case ' ': return 0x0000000000000000;
@@ -171,12 +181,11 @@ uint64_t LCDGlassPanel::getSymbol(char symb)
 	}
 }
 
-LCDGlassPanel::~LCDGlassPanel()
+void LCDGlassPanel::writeChar(uint8_t x, uint8_t y, char ch)
 {
-	//for (Pin* pin : __pin_array)
-	//	delete pin;
-	for (LCDGlassPanelBlock5x8* block : __blocks)
-		delete block;
+	if (y * __width + x >= __blocks.size()) return;
+	LCDGlassPanelBlock5x8* block = __blocks.at(y * __width + x);
+	block->setSymbol(ch);
 }
 
 QPoint LCDGlassPanel::calculatePinPosition(int i)
@@ -197,4 +206,30 @@ void LCDGlassPanel::paintEvent(QPaintEvent *event)
 
 void LCDGlassPanel::pinSignalChanged()
 {
+}
+
+void LCDGlassPanel::shiftToLeft()
+{
+	for (uint8_t y = 0; y < __height; ++y)
+	{
+		LCDGlassPanelBlock5x8* block = __blocks.at(y * __width);
+		for (uint8_t x = 1; x < __width; ++x)
+		{
+			__blocks[y * __width + x - 1] = __blocks.at(y * __width + x);
+		}
+		__blocks[y * __width + __width - 1] = block;
+	}
+}
+
+void LCDGlassPanel::shiftToRight()
+{
+	for (uint8_t y = 0; y < __height; ++y)
+	{
+		LCDGlassPanelBlock5x8* block = __blocks.at(y * __width + __width - 1);
+		for (uint8_t x = __width - 1; x > 0; --x)
+		{
+			__blocks[y * __width + x] = __blocks.at(y * __width + x - 1);
+		}
+		__blocks[0] = block;
+	}
 }

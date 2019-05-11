@@ -3,11 +3,11 @@
 
 #include <QPainter>
 
-#define H_DOTS (double)5
-#define V_DOTS (double)8
-#define PIXEL_WIDTH (.54 *  (ZOOM_FACTOR))
-#define PIXEL_HEIGHT (.6 *  (ZOOM_FACTOR))
-#define PIXEL_MARGIN (.05 * (ZOOM_FACTOR))
+#define H_DOTS 5
+#define V_DOTS 8
+#define PIXEL_WIDTH .54 
+#define PIXEL_HEIGHT .6 
+#define PIXEL_MARGIN .05
 #define TURNED_OFF QColor(0,0,0,48)
 #define TURNED_ON QColor(0,0,0,210)
 
@@ -24,6 +24,7 @@ LCDGlassPanelBlock5x8::LCDGlassPanelBlock5x8(LCDGlassPanel* parent)
 void LCDGlassPanelBlock5x8::setSymbol(char symbol)
 { 
 	__symbol = __owner->getSymbol(symbol);
+	update();
 }
 
 void LCDGlassPanelBlock5x8::paintEvent(QPaintEvent* event)

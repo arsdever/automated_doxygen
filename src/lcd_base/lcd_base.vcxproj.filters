@@ -42,6 +42,12 @@
     <ClCompile Include="lcd_glass_panel_block_5x8.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lcd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lcd_controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="interface.h">
@@ -56,6 +62,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="lcd_glass_panel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="lcd.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="lcd_controller.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QWidget>
-#include <stdint.h>
 
 class LCDGlassPanel;
 class QPaintEvent;

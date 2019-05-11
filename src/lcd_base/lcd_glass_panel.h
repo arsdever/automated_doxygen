@@ -3,16 +3,11 @@
 
 #include <QWidget>
 #include <QList>
-#include <stdint.h>
+#include "../include/metric_macros.h"
 
 class Pin;
 class QPaintEvent;
 class LCDGlassPanelBlock5x8;
-
-#define ZOOM_FACTOR 2
-#define TO_INCH(mm) ((mm) * 0.0393700787)
-#define NORMALIZE_X(value) (logicalDpiX() * (TO_INCH(value)))
-#define NORMALIZE_Y(value) (logicalDpiY() * (TO_INCH(value)))
 
 class LCDGlassPanel : public QWidget
 {
@@ -23,6 +18,7 @@ public:
 	LCDGlassPanel(int width, int height, QWidget* parent = nullptr);
 	~LCDGlassPanel();
 
+
 	uint64_t getSymbol(char symb);
 
 protected:
@@ -31,6 +27,11 @@ protected:
 
 protected:
 	void paintEvent(QPaintEvent* event);
+
+public slots:
+	void writeChar(uint8_t x, uint8_t y, char ch);
+	void shiftToLeft();
+	void shiftToRight();
 
 private slots:
 	void pinSignalChanged();
