@@ -1,8 +1,6 @@
 #ifndef LCD_MEASUREMENTS_H
 #define LCD_MEASUREMENTS_H
 
-#include <core.h>
-
 struct LCDPhysicalSettings final
 {
 	struct Glass
