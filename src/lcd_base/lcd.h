@@ -1,25 +1,28 @@
 #pragma once
 
-#include <QWidget>
+#include <QObject>
+#include <QList>
 
 class LCDController;
-class LCDGlassPanel;
+class LCDBlock;
+class QPaintEvent;
 class Port;
 
-class LCD : public QWidget
+class LCD : public QObject
 {
 
 	Q_OBJECT
 
 public:
-	LCD(uint8_t w, uint8_t h, QWidget* parent = nullptr);
+	LCD(uint8_t columns_count, uint8_t row_count, LCDController* controller, QObject* parent = nullptr);
 
-	const Port& getPort() const;
-	Port& getPort();
-
+	uint64_t getBlock(uint8_t column, uint8_t row) const;
+	uint8_t rows() const;
+	uint8_t columns() const;
+	
 private:
-	Port* __port;
-	LCDGlassPanel* __glass_panel;
+	uint8_t __rows;
+	uint8_t __columns;
 	LCDController* __controller;
 };
 

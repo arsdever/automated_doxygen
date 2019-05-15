@@ -1,22 +1,24 @@
 #include "lcd_controller.h"
-#include "lcd_glass_panel.h"
 #include "pin.h"
 
-LCDController::LCDController(uint8_t w, uint8_t h, Port& port, LCDGlassPanel* glass, QObject* parent)
+#include <QDebug>
+
+LCDController::LCDController(uint8_t w, uint8_t h, Port& port, QObject* parent)
 	: QObject(parent),
 	__port(port),
-	__glass(glass),
 	__shifted(0),
-	__ddram(new uint8_t[0x67]),
+	__ddram(new uint8_t[0x7F]),
 	__cgram(new uint8_t[0x3F]),
 	__address_counter(__ddram),
 	__increment_mode(true),
+	__lines(false),
 	__shift(false),
-	__display(true),
 	__cursor(false),
 	__blink(false),
 	__itype(BIT8)
-{}
+{
+	emit changeDisplayState(false);
+}
 
 static uint8_t swap(uint8_t number)
 {
@@ -42,7 +44,7 @@ void LCDController::instruction(uint8_t command)
 	else if (command & 0x40) setAddressCGRAM(command & 0x3F);
 	else if (command & 0x20) setFunction(command & 0x10, command & 0x08, command & 0x04);
 	else if (command & 0x10) shiftCursorOrDisplay(command & 0x08, command & 0x04);
-	else if (command & 0x08) turnDisplay(command & 0x04, command & 0x02, command & 0x01);
+	else if (command & 0x08) changeDisplayState(command & 0x04, command & 0x02, command & 0x01);
 	else if (command & 0x04) setEntryMode(command & 0x02, command & 0x01);
 	else if (command & 0x02) returnHome();
 	else if (command & 0x01) clearDisplay();
@@ -204,18 +206,66 @@ uint64_t LCDController::getSymbolFromCGROM(char ch) const
 	}
 }
 
+uint64_t LCDController::getSymbolFromDDRAM(uint8_t address) const
+{
+	if (__lines == 1)
+		return getSymbolFromCGROM(__ddram[address > 0x3F ? (address % 0x40 + __shifted) % 0x40 + 0x40 : (address + __shifted) % 0x40]);
+	else
+		return getSymbolFromCGROM(__ddram[(address + __shifted) % 0x80]);
+}
+
 void LCDController::incrementAddressCounter()
 {
-	if ((__ddram_address && ++__address_counter > __ddram + 0x7F) ||
-		(!__ddram_address && ++__address_counter > __cgram + 0x3F))
+	if (__ddram_address)
+	{
+		if (__lines)
+		{
+			if (++__address_counter > __ddram + 0x7F)
+				__address_counter = __ddram;
+		}
+		else
+		{
+			if (__address_counter < __ddram + 0x40)
+			{
+				if (++__address_counter > __ddram + 0x3F)
+					__address_counter = __ddram;
+			}
+			else
+			{
+				if (++__address_counter > __ddram + 0x7F)
+					__address_counter = __ddram + 0x40;
+			}
+		}
+	}
+	else if(++__address_counter > __cgram + 0x3F)
 		__address_counter = __ddram_address ? __ddram : __cgram;
 }
 
 void LCDController::decrementAddressCounter()
 {
-	if ((__ddram_address && --__address_counter < __ddram) ||
-		(!__ddram_address && --__address_counter < __cgram))
-		__address_counter = __ddram_address ? __ddram + 0x7F : __cgram + 0x3F;
+	if (__ddram_address)
+	{
+		if (__lines)
+		{
+			if (--__address_counter < __ddram)
+				__address_counter = __ddram + 0x7F;
+		}
+		else
+		{
+			if (__address_counter < __ddram + 0x40)
+			{
+				if (--__address_counter < __ddram)
+					__address_counter = __ddram + 0x3F;
+			}
+			else
+			{
+				if (--__address_counter < __ddram + 0x3F)
+					__address_counter = __ddram + 0x7F;
+			}
+		}
+	}
+	else if (--__address_counter < __cgram)
+		__address_counter = __cgram + 0x3F;
 }
 
 void LCDController::portEnabled(bool enabled)
@@ -243,10 +293,10 @@ void LCDController::clearDisplay()
 {
 	__address_counter = 0;
 	__increment_mode = 1;
-	for(int i = 0; i < 0x67; ++i) 
+	for (int i = 0; i < 0x7F; ++i)
 	{
 		__ddram[i] = 0;
-		writeChar(i % 0x40, i / 0x40, 0x20);
+		emit changed();
 	}
 }
 
@@ -254,8 +304,8 @@ void LCDController::returnHome()
 {
 	__address_counter = 0;
 	__increment_mode = 1;
-	while (__shifted--)
-		__glass->shiftToLeft();
+	__shifted = 0;
+	emit changed();
 }
 
 void LCDController::setEntryMode(bool id, bool s)
@@ -264,9 +314,9 @@ void LCDController::setEntryMode(bool id, bool s)
 	__increment_mode = id;
 }
 
-void LCDController::turnDisplay(bool d, bool c, bool b)
+void LCDController::changeDisplayState(bool d, bool c, bool b)
 {
-	__display = d;
+	emit changeDisplayState(d);
 	__cursor = c;
 	__blink = b;
 }
@@ -279,16 +329,15 @@ void LCDController::shiftCursorOrDisplay(bool s, bool d)
 	{
 		if (dir)
 		{
-			if (++__shifted > 0x3F)
+			if (++__shifted > (__lines ? 0x3F : 0x7F))
 				__shifted = 0;
-			__glass->shiftToLeft();
 		}
 		else
 		{
 			if (--__shifted < 0)
-				__shifted = 0x3F;
-			__glass->shiftToRight();
+				__shifted = __lines ? 0x3F : 0x7F;
 		}
+		emit changed();
 	}
 	else
 	{
@@ -297,7 +346,6 @@ void LCDController::shiftCursorOrDisplay(bool s, bool d)
 		else
 			decrementAddressCounter();
 	}
-	__glass->update();
 }
 
 void LCDController::setFunction(bool dl, bool n, bool f)
@@ -307,7 +355,7 @@ void LCDController::setFunction(bool dl, bool n, bool f)
 	else
 		__itype = BIT4;
 
-	bool line_number = n;
+	__lines = n;
 	bool font_type = f;
 }
 
@@ -331,10 +379,10 @@ void LCDController::readAddressAndBusyFlag()
 void LCDController::writeData(uint8_t d)
 {
 	*__address_counter = d;
-	if(__ddram_address)
+	if (__ddram_address)
 	{
 		uint8_t absaddr = __address_counter - __ddram;
-		writeChar(absaddr % 0x40, absaddr / 0x40, d);
+		emit changed();
 
 		if (__increment_mode)
 			incrementAddressCounter();

@@ -1,37 +1,27 @@
 #include "lcd.h"
 #include "lcd_controller.h"
-#include "lcd_glass_panel.h"
 #include "pin.h"
-#include "../include/metric_macros.h"
 
-#define PIN_DISTANCE (2.54 - PIN_WIDTH)
+#include <metric_macros.h>
+#include <QPainter>
 
-LCD::LCD(uint8_t w, uint8_t h, QWidget* parent)
-	: QWidget(parent),
-	__port(new Port),
-	__glass_panel(new LCDGlassPanel(w, h, this)),
-	__controller(new LCDController(w, h, *__port, __glass_panel, this))
+LCD::LCD(uint8_t column_count, uint8_t row_count, LCDController* controller, QObject* parent)
+	: QObject(parent),
+	__rows(row_count),
+	__columns(column_count),
+	__controller(controller) {}
+
+uint64_t LCD::getBlock(uint8_t column, uint8_t row) const
 {
-	for (uint8_t i = 0; i < 16; ++i)
-	{
-		Pin* pin = new Pin(this);
-		__port->push_back(pin);
-		pin->move(i * NORMALIZE_X(PIN_DISTANCE + PIN_WIDTH) + NORMALIZE_X(8), 0);
-	}
-
-	connect(__port->at(LCDController::Pinout::E), SIGNAL(signalChanged(bool)), __controller, SLOT(portEnabled(bool)));
-	connect(__controller, SIGNAL(writeChar(uint8_t, uint8_t, char)), __glass_panel, SLOT(writeChar(uint8_t, uint8_t, char)));
-
-	setFixedSize(NORMALIZE_X(80), NORMALIZE_Y(36));
-	__glass_panel->move(NORMALIZE_X(5.2), NORMALIZE_Y(10.75));
+	return __controller->getSymbolFromDDRAM(column + row * 0x40);
 }
 
-const Port& LCD::getPort() const
+uint8_t LCD::rows() const
 {
-	return *__port;
+	return __rows;
 }
 
-Port& LCD::getPort()
+uint8_t LCD::columns() const
 {
-	return *__port;
+	return __columns;
 }

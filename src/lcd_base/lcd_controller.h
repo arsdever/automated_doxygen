@@ -40,7 +40,7 @@ public:
 	};
 
 public:
-	LCDController(uint8_t w, uint8_t h, Port& port, LCDGlassPanel* glass, QObject* parent = nullptr);
+	LCDController(uint8_t w, uint8_t h, Port& port, QObject* parent = nullptr);
 
 	void instruction(uint8_t command);
 
@@ -48,14 +48,14 @@ public slots:
 	void portEnabled(bool enabled);
 
 signals:
-	void writeChar(uint8_t, uint8_t, char);
-	void shiftToLeft(uint8_t);
-	void shiftToRight(uint8_t);
+	void changeDisplayState(bool);
+	void changed();
 
 private:
 	// Some helpers
 	uint8_t getData() const;
 	uint64_t getSymbolFromCGROM(char ch) const;
+	uint64_t getSymbolFromDDRAM(uint8_t address) const;
 	void incrementAddressCounter();
 	void decrementAddressCounter();
 
@@ -63,7 +63,7 @@ private:
 	void clearDisplay();
 	void returnHome();
 	void setEntryMode(bool id, bool s);
-	void turnDisplay(bool d, bool c, bool b);
+	void changeDisplayState(bool d, bool c, bool b);
 	void shiftCursorOrDisplay(bool s, bool d);
 	void setFunction(bool dl, bool n, bool f);
 	void setAddressCGRAM(uint8_t a);
@@ -74,20 +74,21 @@ private:
 
 private:
 	Port& __port;
-	LCDGlassPanel* __glass;
 	int8_t __shifted;
 	uint8_t* __ddram;
 	uint8_t* __cgram;
 	uint8_t* __address_counter;
 	bool __ddram_address;
 	bool __increment_mode;
+	bool __lines;
 	bool __shift;
-	bool __display;
 	bool __cursor;
 	bool __blink;
 	bool __waiting_second;
 	uint8_t __command;
 	InterfaceType __itype;
+
+	friend class LCD;
 };
 
 #endif

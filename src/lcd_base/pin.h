@@ -6,7 +6,7 @@ class QPaintEvent;
 class QMouseEvent;
 
 #define PIN_WIDTH 1.8
-#define PIN_HEIGHT 2.5
+#define PIN_HEIGHT 3.4
 
 class Pin : public QWidget
 {

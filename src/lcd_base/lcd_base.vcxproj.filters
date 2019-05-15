@@ -36,32 +36,27 @@
     <ClCompile Include="pin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lcd_glass_panel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="lcd_glass_panel_block_5x8.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="lcd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="lcd_controller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="interface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lcd_glass_panel_block_5x8.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClCompile Include="test_tool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lcd_measurements.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lcd1602a_1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bc1604a.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="pin.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="lcd_glass_panel.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="lcd.h">
@@ -70,5 +65,22 @@
     <QtMoc Include="lcd_controller.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="test_tool.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lcd_measurements.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lcd1602a_1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lcd_widget_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bc1604a.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
