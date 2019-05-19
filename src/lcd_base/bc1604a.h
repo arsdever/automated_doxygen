@@ -13,14 +13,15 @@ class BC1604A : public LCDWidgetBase
 public:
 	BC1604A(QWidget* parent = nullptr);
 
+	void initDecorators();
+
 	const Port& getPort() const;
 	Port& getPort();
 
 	LCDPhysicalSettings const& getSettings() const override;
-	void drawPCB(QPainter& painter) override;
-	void drawPort(QPainter& painter) override;
-	void drawDecorations(QPainter& painter) override;
-	void drawScreen(QPainter& painter) override;
+	void drawPort(QPainter& painter);
+	void drawData(QPainter& painter);
+	bool backlightState() const;
 
 protected:
 	void paintEvent(QPaintEvent* event) override;
@@ -30,4 +31,5 @@ private:
 	LCDController* __controller;
 	LCD* __lcd;
 	LCDPhysicalSettings* __settings;
+	bool* __backlight;
 };

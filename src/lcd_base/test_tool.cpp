@@ -1,5 +1,6 @@
 #include "test_tool.h"
 #include "pin.h"
+#include "port.h"
 #include "lcd_controller.h"
 
 #include <QGridLayout>
@@ -9,6 +10,11 @@
 TestTool::TestTool(Port* port) 
 	: __port(port),
 	__data(new QLineEdit)
+{
+	init();
+}
+
+void TestTool::init()
 {
 	QGridLayout* lay = new QGridLayout;
 
@@ -28,7 +34,7 @@ TestTool::TestTool(Port* port)
 	connect(wc, SIGNAL(clicked()), this, SLOT(writeCommand()));
 	connect(wd, SIGNAL(clicked()), this, SLOT(writeData()));
 
-	__data->setText("f");
+	__data->setText("0x0f");
 	writeCommand();
 	__data->setText("0x30");
 	writeCommand();
@@ -37,7 +43,7 @@ TestTool::TestTool(Port* port)
 
 	for (int i = 0; i < message.size(); ++i)
 	{
-		__data->setText(tr("%1").arg(int(message[i].toLatin1()), 0, 16));
+		__data->setText(tr("0x%1").arg(int(message[i].toLatin1()), 0, 16));
 		writeData();
 	}
 	__data->setText("0x18");
@@ -49,6 +55,7 @@ void TestTool::writeCommand()
 {
 	bool ok = false;
 	uint8_t data = __data->text().toInt(&ok, 16);
+
 	if (ok)
 	{
 		__port->at(LCDController::DB0)->setSignal(data & 1);
@@ -67,10 +74,10 @@ void TestTool::writeCommand()
 
 void TestTool::writeData()
 {
-	__port->at(LCDController::RS)->setSignal(true);
-
 	bool ok = false;
 	uint8_t data = __data->text().toInt(&ok, 16);
+	__port->at(LCDController::RS)->setSignal(true);
+	
 	if (ok)
 	{
 		__port->at(LCDController::DB0)->setSignal(data & 1);

@@ -1,5 +1,6 @@
 #include "lcd_controller.h"
 #include "pin.h"
+#include "port.h"
 
 #include <QDebug>
 
@@ -13,23 +14,34 @@ LCDController::LCDController(uint8_t w, uint8_t h, Port& port, QObject* parent)
 	__increment_mode(true),
 	__lines(false),
 	__shift(false),
+	__display(false),
 	__cursor(false),
 	__blink(false),
 	__itype(BIT8)
 {
-	emit changeDisplayState(false);
-}
-
-static uint8_t swap(uint8_t number)
-{
-	uint8_t result = 0;
-	for (uint8_t i = 0; i < 8; ++i)
+	QString names[] = {
+		"VSS",
+		"VDD",
+		"V0",
+		"RS",
+		"RW",
+		"E",
+		"DB0",
+		"DB1",
+		"DB2",
+		"DB3",
+		"DB4",
+		"DB5",
+		"DB6",
+		"DB7",
+		"LEDP",
+		"LEDM"
+	};
+	for (uint8_t i = 0; i < 16; ++i)
 	{
-		result |= number & 1;
-		result <<= 1;
-		number >>= 1;
+		Pin* pin = new Pin(names[i]);
+		__port.push_back(pin);
 	}
-	return result;
 }
 
 void LCDController::instruction(uint8_t command)
@@ -48,6 +60,11 @@ void LCDController::instruction(uint8_t command)
 	else if (command & 0x04) setEntryMode(command & 0x02, command & 0x01);
 	else if (command & 0x02) returnHome();
 	else if (command & 0x01) clearDisplay();
+}
+
+bool LCDController::displayOn() const
+{
+	return __display;
 }
 
 uint8_t LCDController::getData() const
@@ -316,9 +333,10 @@ void LCDController::setEntryMode(bool id, bool s)
 
 void LCDController::changeDisplayState(bool d, bool c, bool b)
 {
-	emit changeDisplayState(d);
+	__display = d;
 	__cursor = c;
 	__blink = b;
+	emit changed();
 }
 
 void LCDController::shiftCursorOrDisplay(bool s, bool d)
@@ -372,7 +390,7 @@ void LCDController::setAddressDDRAM(uint8_t a)
 void LCDController::readAddressAndBusyFlag()
 {
 	__port.mutePort();
-	__port.write(Pinout::DB0, swap(__ddram_address ? __address_counter - __ddram : __address_counter - __cgram), 8);
+	__port.write(Pinout::DB0, __ddram_address ? __address_counter - __ddram : __address_counter - __cgram, 8);
 	__port.unmutePort();
 }
 
@@ -394,6 +412,6 @@ void LCDController::writeData(uint8_t d)
 void LCDController::readData()
 {
 	__port.mutePort();
-	__port.write(Pinout::DB0, swap(*__address_counter));
+	__port.write(Pinout::DB0, *__address_counter);
 	__port.unmutePort();
 }

@@ -2,8 +2,8 @@
 
 #include <QWidget>
 
-class Port;
 class QLineEdit;
+class Port;
 
 class TestTool : public QWidget
 {
@@ -12,6 +12,7 @@ class TestTool : public QWidget
 
 public:
 	TestTool(Port* port);
+	void init();
 
 private slots:
 	void writeCommand();

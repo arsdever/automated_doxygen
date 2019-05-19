@@ -44,11 +44,12 @@ public:
 
 	void instruction(uint8_t command);
 
+	bool displayOn() const;
+
 public slots:
 	void portEnabled(bool enabled);
 
 signals:
-	void changeDisplayState(bool);
 	void changed();
 
 private:
@@ -82,6 +83,7 @@ private:
 	bool __increment_mode;
 	bool __lines;
 	bool __shift;
+	bool __display;
 	bool __cursor;
 	bool __blink;
 	bool __waiting_second;
