@@ -1,14 +1,15 @@
 #include "bc1604a.h"
 
 #include "lcd.h"
-#include "lcd_measurements.h"
-#include "port.h"
-#include "pin.h"
-#include <metric_macros.h>
-#include <QPainter>
 #include "lcd_controller.h"
+#include "lcd_measurements.h"
+#include "pin.h"
+#include "port.h"
+
+#include <metric_macros.h>
 #include <lcd_decorators.h>
-#include <QGraphicsDropShadowEffect>
+
+#include <QPainter>
 
 #define H_DOTS 5
 #define V_DOTS 8
@@ -19,60 +20,20 @@
 
 BC1604A::BC1604A(QWidget* parent)
 	: LCDWidgetBase(parent),
-	__port(new Port),
-	__controller(new LCDController(16, 4, *__port, this)),
-	__lcd(new LCD(16, 4, __controller, this)),
+	__lcd(new LCD(16, 4, &getController(), this)),
 	__settings(new LCDPhysicalSettings{ .55, .55, .05, .05, 2.95, 4.75, .6, .6, 56.2, 20.8, 62, 26, 38.1, 1 , 87, 60, 2.5, 82, 55, 10, 79.2, 35.2 }),
 	__backlight(nullptr)
 {
-
 	double pin_distance = getSettings().__pinout_length / 15;
 	for (uint8_t i = 0; i < 16; ++i)
 	{
-		__port->at(i)->setParent(this);
-		__port->at(i)->move(i * NORMALIZE_X(pin_distance) + NORMALIZE_X(getSettings().__pin_margin), 0);
+		getPort().at(i)->setParent(this);
+		getPort().at(i)->move(i * NORMALIZE_X(pin_distance) + NORMALIZE_X(getSettings().__pin_margin), 0);
 	}
 	setFixedSize(NORMALIZE_X(getSettings().__pcb_width), NORMALIZE_Y(getSettings().__pcb_height));
-	connect(__port->at(LCDController::Pinout::E), SIGNAL(signalChanged(bool)), __controller, SLOT(portEnabled(bool)));
-	connect(__port->at(LCDController::Pinout::LEDM), SIGNAL(signalChanged(bool)), this, SLOT(update()));
-	connect(__port->at(LCDController::Pinout::LEDP), SIGNAL(signalChanged(bool)), this, SLOT(update()));
-	connect(__controller, SIGNAL(changed()), this, SLOT(update()));
+	connect(getPort().at(LCDController::Pinout::LEDM), SIGNAL(signalChanged(bool)), this, SLOT(updateDisplayConfig()));
+	connect(getPort().at(LCDController::Pinout::LEDP), SIGNAL(signalChanged(bool)), this, SLOT(updateDisplayConfig()));
 	initDecorators();
-}
-
-void BC1604A::initDecorators()
-{
-	GlassCaseDecoratorOptions* decor1 = new GlassCaseDecoratorOptions;
-	decor1->__outer_area.setTopLeft(QPointF(NORMALIZE_X((getSettings().__pcb_width - getSettings().__border_width) / 2), NORMALIZE_Y((getSettings().__pcb_height - getSettings().__border_height) / 2)));
-	decor1->__outer_area.setSize(QSizeF(NORMALIZE_X(getSettings().__border_width), NORMALIZE_Y(getSettings().__border_height)));
-	decor1->__inner_area.setTopLeft(QPointF(NORMALIZE_X((getSettings().__pcb_width - getSettings().__viewport_width) / 2), NORMALIZE_Y((getSettings().__pcb_height - getSettings().__viewport_height) / 2)));
-	decor1->__inner_area.setSize(QSizeF(NORMALIZE_X(getSettings().__viewport_width), NORMALIZE_Y(getSettings().__viewport_height)));
-	decor1->__cut_area_size.setWidth(NORMALIZE_X(SCREEN_HOLDER_CUT_WIDTH));
-	decor1->__cut_area_size.setHeight(NORMALIZE_Y(SCREEN_HOLDER_CUT_HEIGHT));
-	PCBDecoratorOptions* decor2 = new PCBDecoratorOptions;
-	decor2->__pcb_rect = rect();
-	decor2->__holes_radius_x = NORMALIZE_X(getSettings().__pcb_hole_diameter / 2.0);
-	decor2->__holes_radius_y = NORMALIZE_Y(getSettings().__pcb_hole_diameter / 2.0);
-	decor2->__holes_distance_x = NORMALIZE_X(getSettings().__pcb_hole_h_distance);
-	decor2->__holes_distance_y = NORMALIZE_Y(getSettings().__pcb_hole_v_distance);
-	ScreenDecoratorOptions* decor3 = new ScreenDecoratorOptions;
-	decor3->__glass.setTopLeft(QPointF(NORMALIZE_X((getSettings().__pcb_width - getSettings().__viewport_width) / 2), NORMALIZE_Y((getSettings().__pcb_height - getSettings().__viewport_height) / 2)));
-	decor3->__glass.setSize(QSizeF(NORMALIZE_X(getSettings().__viewport_width), NORMALIZE_Y(getSettings().__viewport_height)));
-	__backlight = &decor3->__backlight;
-	addDecorator(new PCBDecorator(decor2));
-	addDecorator(new ScreenDecorator(decor3));
-	addDecorator(new GlassCaseDecorator(decor1));
-}
-
-
-const Port& BC1604A::getPort() const
-{
-	return *__port;
-}
-
-Port& BC1604A::getPort()
-{
-	return *__port;
 }
 
 LCDPhysicalSettings const& BC1604A::getSettings() const
@@ -80,18 +41,9 @@ LCDPhysicalSettings const& BC1604A::getSettings() const
 	return *__settings;
 }
 
-void BC1604A::paintEvent(QPaintEvent* event)
+bool BC1604A::isDisplayOn() const
 {
-	*__backlight = backlightState();
-	QPainter painter(this);
-	painter.setRenderHint(QPainter::HighQualityAntialiasing);
-	painter.setPen(Qt::NoPen);
-	decorate(painter);
-	drawPort(painter);
-	if(__controller->displayOn())
-		drawData(painter);
-
-	LCDWidgetBase::paintEvent(event);
+	return true;
 }
 
 void BC1604A::drawData(QPainter& painter)
@@ -135,12 +87,39 @@ void BC1604A::drawData(QPainter& painter)
 	painter.restore();
 }
 
-bool BC1604A::backlightState() const
+void BC1604A::initDecorators()
 {
-	return !__port->at(LCDController::LEDM)->getSignal() && __port->at(LCDController::LEDP)->getSignal();
+	GlassCaseDecoratorOptions* decor1 = new GlassCaseDecoratorOptions;
+	decor1->__outer_area.setTopLeft(QPointF(NORMALIZE_X((getSettings().__pcb_width - getSettings().__border_width) / 2), NORMALIZE_Y((getSettings().__pcb_height - getSettings().__border_height) / 2)));
+	decor1->__outer_area.setSize(QSizeF(NORMALIZE_X(getSettings().__border_width), NORMALIZE_Y(getSettings().__border_height)));
+	decor1->__inner_area.setTopLeft(QPointF(NORMALIZE_X((getSettings().__pcb_width - getSettings().__viewport_width) / 2), NORMALIZE_Y((getSettings().__pcb_height - getSettings().__viewport_height) / 2)));
+	decor1->__inner_area.setSize(QSizeF(NORMALIZE_X(getSettings().__viewport_width), NORMALIZE_Y(getSettings().__viewport_height)));
+	decor1->__cut_area_size.setWidth(NORMALIZE_X(SCREEN_HOLDER_CUT_WIDTH));
+	decor1->__cut_area_size.setHeight(NORMALIZE_Y(SCREEN_HOLDER_CUT_HEIGHT));
+	PCBDecoratorOptions* decor2 = new PCBDecoratorOptions;
+	decor2->__pcb_rect = rect();
+	decor2->__holes_radius_x = NORMALIZE_X(getSettings().__pcb_hole_diameter / 2.0);
+	decor2->__holes_radius_y = NORMALIZE_Y(getSettings().__pcb_hole_diameter / 2.0);
+	decor2->__holes_distance_x = NORMALIZE_X(getSettings().__pcb_hole_h_distance);
+	decor2->__holes_distance_y = NORMALIZE_Y(getSettings().__pcb_hole_v_distance);
+	ScreenDecoratorOptions* decor3 = new ScreenDecoratorOptions;
+	decor3->__glass.setTopLeft(QPointF(NORMALIZE_X((getSettings().__pcb_width - getSettings().__viewport_width) / 2), NORMALIZE_Y((getSettings().__pcb_height - getSettings().__viewport_height) / 2)));
+	decor3->__glass.setSize(QSizeF(NORMALIZE_X(getSettings().__viewport_width), NORMALIZE_Y(getSettings().__viewport_height)));
+	__backlight = &decor3->__backlight;
+	addDecorator(new PCBDecorator(decor2));
+	addDecorator(new ScreenDecorator(decor3));
+	addDecorator(new GlassCaseDecorator(decor1));
 }
 
-void BC1604A::drawPort(QPainter& painter)
+bool BC1604A::backlightState() const
 {
-	return;
+	return !getPort().at(LCDController::LEDM)->getSignal() && getPort().at(LCDController::LEDP)->getSignal();
+}
+
+void BC1604A::updateDisplayConfig()
+{
+	if (__backlight == nullptr)
+		return;
+
+	*__backlight = backlightState();
 }

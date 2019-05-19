@@ -2,33 +2,28 @@
 
 #include "lcd_widget_base.h"
 
-class Port;
-class LCD;
 struct LCDPhysicalSettings;
-class LCDController;
-class QPaintEvent;
+class LCD;
+class QPainter;
 
 class BC1604A : public LCDWidgetBase
 {
 public:
 	BC1604A(QWidget* parent = nullptr);
-
-	void initDecorators();
-
-	const Port& getPort() const;
-	Port& getPort();
-
 	LCDPhysicalSettings const& getSettings() const override;
-	void drawPort(QPainter& painter);
-	void drawData(QPainter& painter);
-	bool backlightState() const;
 
 protected:
-	void paintEvent(QPaintEvent* event) override;
+	bool isDisplayOn() const override;
+	void drawData(QPainter& painter) override;
 
 private:
-	Port* __port;
-	LCDController* __controller;
+	void initDecorators();
+	bool backlightState() const;
+
+private slots:
+	void updateDisplayConfig();
+
+private:
 	LCD* __lcd;
 	LCDPhysicalSettings* __settings;
 	bool* __backlight;
