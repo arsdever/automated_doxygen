@@ -3,12 +3,20 @@
 #include <lcd_core.h>
 #include <metric_macros.h>
 
+#include <QDrag>
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDragLeaveEvent>
+#include <QDropEvent>
+#include <QMimeData>
+
 #include <QPaintEvent>
 #include <QPainter>
 #include <QDebug>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QUuid>
+#include <QtMath>
 
 #define DRAG_DISTANCE 5
 
@@ -21,6 +29,11 @@
 #else
 #define FONT_SIZE 8
 #endif
+
+qreal distance(QPoint p1, QPoint p2)
+{
+	return qSqrt((p1.x() - p2.x()) * (p1.x() - p2.x()) + (p1.y() - p2.y()) * (p1.y() - p2.y()));
+}
 
 PinWidget::PinWidget(QWidget* parent)
 	: PinWidget(QString("pin_%1").arg(QUuid::createUuid().toString(QUuid::Id128)), parent)
@@ -45,6 +58,7 @@ PinWidget::PinWidget(QString const& pin_name, QWidget* parent)
 
 void PinWidget::init()
 {
+	setAcceptDrops(true);
 	setAttribute(Qt::WA_NoSystemBackground);
 	setCursor(Qt::PointingHandCursor);
 	setFixedSize(NORMALIZE_X(PIN_WIDTH), NORMALIZE_Y(PIN_HEIGHT));
@@ -52,10 +66,59 @@ void PinWidget::init()
 	connect(__pin, &Pin::signalChanged, this, qOverload<>(&QWidget::repaint));
 }
 
+void PinWidget::mousePressEvent(QMouseEvent* event)
+{
+	__drag_options.__drag_started = true;
+	__drag_options.__drag_started_position = event->pos();
+	setMouseTracking(true);
+}
+
+void PinWidget::mouseMoveEvent(QMouseEvent* event)
+{
+	if (!__drag_options.__drag_started)
+		return;
+
+	if (distance(__drag_options.__drag_started_position, event->pos()) < DRAG_DISTANCE)
+		return;
+
+	QDrag drag(this);
+	QMimeData* mimeData = new QMimeData;
+	mimeData->setData("application/json", __pin->serialize());
+	drag.setMimeData(mimeData);
+	drag.exec(Qt::MoveAction);
+}
+
 void PinWidget::mouseReleaseEvent(QMouseEvent* event)
 {
 	Q_UNUSED(event);
 	__pin->setSignal(!__pin->getSignal());
+	setMouseTracking(false);
+}
+void PinWidget::dragEnterEvent(QDragEnterEvent* event)
+{
+	qDebug() << "dragEnterEvent " << event->mimeData()->formats();
+	const QMimeData* mime = event->mimeData();
+	QJsonDocument doc = QJsonDocument::fromJson(mime->data("application/json"));
+	QJsonObject obj = doc.object();
+	if (obj.contains("type") && obj.value("type").toString() == "pin")
+		event->accept();
+}
+
+void PinWidget::dragLeaveEvent(QDragLeaveEvent* event)
+{
+	event->accept();
+}
+
+void PinWidget::dragMoveEvent(QDragMoveEvent* event)
+{
+	event->accept();
+}
+
+void PinWidget::dropEvent(QDropEvent* event)
+{
+	qDebug() << "dropEvent " << event->mimeData()->formats();
+	const QMimeData* mime = event->mimeData();
+	__pin->deserialize(mime->data("application/json"));
 }
 
 void PinWidget::enterEvent(QEvent* event)

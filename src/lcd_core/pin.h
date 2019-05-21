@@ -3,8 +3,9 @@
 #include "lcd_core_global.h"
 #include <QUuid>
 #include <QObject>
+#include <interfaces.h>
 
-class LCD_CORE_EXPORT Pin : public QObject
+class LCD_CORE_EXPORT Pin : public QObject, public Serializable, public Deserializable
 {
 
 	Q_OBJECT
@@ -18,6 +19,10 @@ public:
 
 	QString getName() const;
 	void setName(QString const& pin_name);
+
+public:
+	QByteArray serialize() const override;
+	void deserialize(QByteArray const&) override;
 
 signals:
 	void signalChanged(bool);
