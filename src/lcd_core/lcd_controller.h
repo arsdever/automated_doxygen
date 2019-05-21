@@ -1,12 +1,13 @@
 #ifndef LCD_CONTROLLER_H
 #define LCD_CONTROLLER_H
 
+#include "lcd_core_global.h"
+
 #include <QObject>
 
 class Port;
-class LCDGlassPanel;
 
-class LCDController : public QObject
+class LCD_CORE_EXPORT LCDController : public QObject
 {
 
 	Q_OBJECT

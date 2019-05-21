@@ -1,10 +1,11 @@
 #ifndef PORT_H
 #define PORT_H
 
+#include "lcd_core_global.h"
 #include "pin.h"
 #include <QList>
 
-class Port : public QList<Pin*>
+class LCD_CORE_EXPORT Port : public QList<Pin*>
 {
 public:
 	void mutePort();

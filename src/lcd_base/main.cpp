@@ -9,10 +9,6 @@ int main(int argc, char **argv)
 
 	LCD1602A_1 lcd;
 	lcd.show();
-	BC1604A lcd1;
-	lcd1.show();
-	TestTool test(&lcd.getPort());
-	test.show();
 
     return app.exec();
 }

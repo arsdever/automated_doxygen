@@ -8,6 +8,9 @@ class QPainter;
 
 class LCD1602A_1 : public LCDWidgetBase
 {
+	
+	Q_OBJECT
+
 public:
 	LCD1602A_1(QWidget* parent = nullptr);
 	LCDPhysicalSettings const& getSettings() const override;

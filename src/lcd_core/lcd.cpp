@@ -1,9 +1,5 @@
 #include "lcd.h"
 #include "lcd_controller.h"
-#include "pin.h"
-
-#include <metric_macros.h>
-#include <QPainter>
 
 LCD::LCD(uint8_t column_count, uint8_t row_count, LCDController* controller, QObject* parent)
 	: QObject(parent),

@@ -1,5 +1,7 @@
 #include "pin_widget.h"
-#include "../include/metric_macros.h"
+
+#include <lcd_core.h>
+#include <metric_macros.h>
 
 #include <QPaintEvent>
 #include <QPainter>
@@ -20,57 +22,57 @@
 #define FONT_SIZE 8
 #endif
 
-Pin::Pin(QWidget * parent)
-	: Pin(QString("pin_%1").arg(QUuid::createUuid().toString(QUuid::Id128)), parent)
+PinWidget::PinWidget(QWidget* parent)
+	: PinWidget(QString("pin_%1").arg(QUuid::createUuid().toString(QUuid::Id128)), parent)
 {}
 
-Pin::Pin(QString const& pin_name, QWidget* parent)
+PinWidget::PinWidget(Pin* pin, QWidget* parent)
 	: QWidget(parent),
-	__signal(false),
-	__name(pin_name),
+	__pin(pin),
 	__hover(false)
+{
+	__pin->setParent(this);
+	init();
+}
+
+PinWidget::PinWidget(QString const& pin_name, QWidget* parent)
+	: QWidget(parent),
+	__pin(new Pin(this)),
+	__hover(false)
+{
+	init();
+}
+
+void PinWidget::init()
 {
 	setAttribute(Qt::WA_NoSystemBackground);
 	setCursor(Qt::PointingHandCursor);
 	setFixedSize(NORMALIZE_X(PIN_WIDTH), NORMALIZE_Y(PIN_HEIGHT));
-	setToolTip(__name);
+	setToolTip(__pin->getName());
+	connect(__pin, &Pin::signalChanged, this, qOverload<>(&QWidget::repaint));
 }
 
-bool Pin::getSignal() const { return __signal; }
-
-void Pin::setSignal(bool value)
-{
-	if (__signal != value) {
-		emit signalChanged(__signal = value);
-		update();
-	}
-}
-
-QString Pin::getName() const { return __name; }
-
-void Pin::setName(QString const& pin_name) { __name = pin_name; }
-
-void Pin::mouseReleaseEvent(QMouseEvent* event)
+void PinWidget::mouseReleaseEvent(QMouseEvent* event)
 {
 	Q_UNUSED(event);
-	setSignal(!getSignal());
+	__pin->setSignal(!__pin->getSignal());
 }
 
-void Pin::enterEvent(QEvent* event)
+void PinWidget::enterEvent(QEvent* event)
 {
 	Q_UNUSED(event);
 	__hover = true;
 	update();
 }
 
-void Pin::leaveEvent(QEvent* event)
+void PinWidget::leaveEvent(QEvent* event)
 {
 	Q_UNUSED(event);
 	__hover = false;
 	update();
 }
 
-void Pin::paintEvent(QPaintEvent* event)
+void PinWidget::paintEvent(QPaintEvent* event)
 {
 	QPainter ptr(this);
 	QPainterPath path;
@@ -88,6 +90,6 @@ void Pin::paintEvent(QPaintEvent* event)
 	else
 		ptr.setBrush(QColor(244, 209, 66));
 	ptr.drawPath(path);
-	ptr.setPen(getSignal() ? Qt::darkGreen : Qt::darkRed);
-	ptr.drawText(QRect(0, 0, NORMALIZE_X(PIN_WIDTH), NORMALIZE_Y(PIN_HEIGHT)), Qt::AlignCenter, QString(getSignal() ? '1' : '0'));
+	ptr.setPen(__pin->getSignal() ? Qt::darkGreen : Qt::darkRed);
+	ptr.drawText(QRect(0, 0, NORMALIZE_X(PIN_WIDTH), NORMALIZE_Y(PIN_HEIGHT)), Qt::AlignCenter, QString(__pin->getSignal() ? '1' : '0'));
 }

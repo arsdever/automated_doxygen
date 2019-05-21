@@ -1,14 +1,14 @@
 #pragma once
 
+#include "lcd_core_global.h"
+
 #include <QObject>
 #include <QList>
 
 class LCDController;
-class LCDBlock;
-class QPaintEvent;
 class Port;
 
-class LCD : public QObject
+class LCD_CORE_EXPORT LCD : public QObject
 {
 
 	Q_OBJECT

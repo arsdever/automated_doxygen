@@ -1,8 +1,6 @@
 #include "lcd_widget_base.h"
 
-#include "lcd_controller.h"
-#include "lcd.h"
-#include "port.h"
+#include <lcd_core.h>
 
 #include <lcd_decorators.h>
 #include <QMouseEvent>

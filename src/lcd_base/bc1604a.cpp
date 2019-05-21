@@ -1,10 +1,7 @@
 #include "bc1604a.h"
 
-#include "lcd.h"
-#include "lcd_controller.h"
-#include "lcd_measurements.h"
-#include "pin.h"
-#include "port.h"
+#include <lcd_core.h>
+#include <lcd_measurements.h>
 
 #include <metric_macros.h>
 #include <lcd_decorators.h>
@@ -28,7 +25,7 @@ BC1604A::BC1604A(QWidget* parent)
 	for (uint8_t i = 0; i < 16; ++i)
 	{
 		getPort().at(i)->setParent(this);
-		getPort().at(i)->move(i * NORMALIZE_X(pin_distance) + NORMALIZE_X(getSettings().__pin_margin), 0);
+		((QWidget*)getPort().at(i)->parent())->move(i * NORMALIZE_X(pin_distance) + NORMALIZE_X(getSettings().__pin_margin), 0);
 	}
 	setFixedSize(NORMALIZE_X(getSettings().__pcb_width), NORMALIZE_Y(getSettings().__pcb_height));
 	connect(getPort().at(LCDController::Pinout::LEDM), SIGNAL(signalChanged(bool)), this, SLOT(updateDisplayConfig()));

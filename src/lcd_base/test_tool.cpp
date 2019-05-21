@@ -1,7 +1,5 @@
 #include "test_tool.h"
-#include "pin.h"
-#include "port.h"
-#include "lcd_controller.h"
+#include <lcd_core.h>
 
 #include <QGridLayout>
 #include <QPushButton>
@@ -24,12 +22,12 @@ void TestTool::init()
 	lay->addWidget(wc, 1, 0);
 	lay->addWidget(wd, 1, 1);
 
-	__port->mutePort();
+	//__port->mutePort();
 	for (Pin* pin : *__port)
 	{
 		pin->setSignal(false);
 	}
-	__port->unmutePort();
+	//__port->unmutePort();
 
 	connect(wc, SIGNAL(clicked()), this, SLOT(writeCommand()));
 	connect(wd, SIGNAL(clicked()), this, SLOT(writeData()));

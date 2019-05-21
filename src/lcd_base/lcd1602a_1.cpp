@@ -1,11 +1,9 @@
 #include "lcd1602a_1.h"
 
-#include "lcd.h"
-#include "lcd_controller.h"
-#include "lcd_measurements.h"
-#include "pin.h"
-#include "port.h"
+#include "pin_widget.h"
 
+#include <lcd_core.h>
+#include <lcd_measurements.h>
 #include <metric_macros.h>
 #include <lcd_decorators.h>
 
@@ -27,9 +25,8 @@ LCD1602A_1::LCD1602A_1(QWidget* parent)
 	double pin_distance = getSettings().__pinout_length / 15;
 	for (uint8_t i = 0; i < 16; ++i)
 	{
-		Pin* pin = getPort().at(i);
-		pin->setParent(this);
-		pin->move(i * NORMALIZE_X(pin_distance) + NORMALIZE_X(getSettings().__pin_margin), 0);
+		PinWidget* pinw = new PinWidget(getPort().at(i), this);
+		pinw->move(i * NORMALIZE_X(pin_distance) + NORMALIZE_X(getSettings().__pin_margin), 0);
 	}
 	setFixedSize(NORMALIZE_X(getSettings().__pcb_width), NORMALIZE_Y(getSettings().__pcb_height));
 	connect(getPort().at(LCDController::Pinout::LEDM), SIGNAL(signalChanged(bool)), this, SLOT(updateDisplayConfig()));

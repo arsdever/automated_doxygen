@@ -389,9 +389,9 @@ void LCDController::setAddressDDRAM(uint8_t a)
 
 void LCDController::readAddressAndBusyFlag()
 {
-	__port.mutePort();
+	//__port.mutePort();
 	__port.write(Pinout::DB0, __ddram_address ? __address_counter - __ddram : __address_counter - __cgram, 8);
-	__port.unmutePort();
+	//__port.unmutePort();
 }
 
 void LCDController::writeData(uint8_t d)
@@ -411,7 +411,7 @@ void LCDController::writeData(uint8_t d)
 
 void LCDController::readData()
 {
-	__port.mutePort();
+	//__port.mutePort();
 	__port.write(Pinout::DB0, *__address_counter);
-	__port.unmutePort();
+	//__port.unmutePort();
 }
