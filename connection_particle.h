@@ -1,5 +1,4 @@
 #pragma once
-
 #include <transferable.h>
 
 namespace ad
@@ -12,7 +11,6 @@ namespace ad
 		virtual ByteBuf const& host() const = 0;
 		virtual ByteBuf const& request() const = 0;
 		virtual ByteBuf const& response() const = 0;
-
 		virtual void setRequest(ByteBuf const &request) = 0;
 		virtual void setResponse(ByteBuf const &response) = 0;
 	};

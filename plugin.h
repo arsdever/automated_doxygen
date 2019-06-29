@@ -1,6 +1,4 @@
-#ifndef PLUGIN_BASE_H
-#define PLUGIN_BASE_H
-
+#pragma once
 namespace ad
 {
 	/**
@@ -21,5 +19,3 @@ namespace ad
 		virtual char const* uuid() const = 0;
 	};
 }
-
-#endif

@@ -1,6 +1,15 @@
 #pragma once
-
 #include <cstdarg>
+
+#define EXTERN_C_GETTER(__factory_class, __factory_return_insterface, __dllname) \
+extern "C" __dll_name##_EXPORT __factory_return_interface* getInstance(char const* a, ...) \
+{ \
+	va_list l; \
+	va_start(l, a); \
+	__factory_return_interface *r = static_cast<__factory_return_interface*>(__factory_class().getInstance(a, l)); \
+	va_end(l); \
+	return r; \
+}
 
 namespace ad
 {

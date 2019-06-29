@@ -1,5 +1,4 @@
 #pragma once
-
 #include <serializable.h>
 #include <deserializable.h>
 

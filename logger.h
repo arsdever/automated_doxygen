@@ -1,6 +1,4 @@
-#ifndef LOGGER_H
-#define LOGGER_H
-
+#pragma once
 #include <plugin.h>
 
 namespace ad
@@ -93,5 +91,3 @@ namespace ad
 		virtual char const** paramList() const = 0;
 	};
 }
-
-#endif

@@ -1,5 +1,4 @@
 #pragma once
-
 namespace ad
 {
 	/**
@@ -9,13 +8,7 @@ namespace ad
 	 * \param size count of bytes to be copied
 	 * \see memset(char*, int const, char const)
 	 */
-	inline void memcpy(char const *from, char *to, int const size)
-	{
-		for (int i = 0; i < size; ++i)
-		{
-			to[i] = from[i];
-		}
-	}
+	inline void memcpy(char const *from, char *to, int const size) { for (int i = 0; i < size; ++i) { to[i] = from[i]; } }
 
 	/**
 	 * \brief This function sets the same *byte* by *size* counts into *buf*
@@ -24,13 +17,7 @@ namespace ad
 	 * \param byte the value to be set
 	 * \see memcpy(char const*, char*, int const)
 	 */
-	inline void memset(char *buf, int const size, char const byte)
-	{
-		for (int i = 0; i < size; ++i)
-		{
-			buf[i] = byte;
-		}
-	}
+	inline void memset(char *buf, int const size, char const byte) { for (int i = 0; i < size; ++i) { buf[i] = byte; } }
 
 	/**
 	 * \brief This interface encapsulates the char* structure for manipulations.
@@ -92,7 +79,6 @@ namespace ad
 		 * \see constData()
 		 */
 		char const* data() const { return constData(); }
-
 	protected:
 		/**
 		 * \brief Get the buffer's capacity.
