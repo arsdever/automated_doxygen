@@ -1,8 +1,8 @@
 #pragma once
 #include <cstdarg>
 
-#define EXTERN_C_GETTER(__factory_class, __factory_return_insterface, __dllname) \
-extern "C" __dll_name##_EXPORT __factory_return_interface* getInstance(char const* a, ...) \
+#define EXTERN_C_GETTER(__factory_class, __factory_return_interface, __dllname) \
+extern "C" __dllname##_EXPORT __factory_return_interface* getInstance(char const* a, ...) \
 { \
 	va_list l; \
 	va_start(l, a); \
