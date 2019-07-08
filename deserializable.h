@@ -1,8 +1,6 @@
 #pragma once
 namespace ad
 {
-	class ByteBuf;
-
 	/**
 	 * \brief This interface is used to deserialize the objects.
 	 * 
@@ -10,6 +8,7 @@ namespace ad
 	 * It also is possible to deserialize from custom defined data (if such implementation exists).
 	 * \see Serializable
 	 */
+	template <typename BYTE_ARRAY_TYPE>
 	class Deserializable
 	{
 	public:
@@ -20,15 +19,8 @@ namespace ad
 
 		/**
 		 * \brief This function deserializes the object.
-		 * \param buf the buffer to get data from
-		 * \see ByteBuf
-		 */
-		virtual void deserialize(ByteBuf const *buf) = 0;
-
-		/**
-		 * \brief This function deserializes the object.
 		 * \param data the data
 		 */
-		virtual void deserialize(char const *data) = 0;
+		virtual void deserialize(BYTE_ARRAY_TYPE const& data) = 0;
 	};
 }

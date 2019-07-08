@@ -1,6 +1,7 @@
 ﻿#pragma once
 namespace ad
 {
+	template <typename STRING_TYPE>
 	class Plugin;
 
 	/**
@@ -8,6 +9,7 @@ namespace ad
 	 * 
 	 * It makes possible to load, register preloaded, unregister and unload plugins.
 	 */
+	template <typename STRING_TYPE>
 	class PluginManager
 	{
 	public:
@@ -21,31 +23,31 @@ namespace ad
 		 * \param plugin_uuid the plugin specific uuid
 		 * \return the requested plugin with specified uuid
 		 */
-		virtual Plugin* findPlugin(char const *plugin_uuid) const = 0;
+		virtual Plugin<STRING_TYPE>* findPlugin(STRING_TYPE const&plugin_uuid) const = 0;
 
 		/**
 		 * \brief Load plugin with specified name.
 		 * \param plugin the plugin name
 		 * \return the loaded plugin
 		 */
-		virtual Plugin* loadPlugin(char const *plugin) = 0;
+		virtual Plugin<STRING_TYPE>* loadPlugin(STRING_TYPE const&plugin) = 0;
 
 		/**
 		 * \brief Unload the plugin.
 		 * \param plugin the plugin name
 		 */
-		virtual void unloadPlugin(char const *plugin) = 0;
+		virtual void unloadPlugin(STRING_TYPE const&plugin) = 0;
 
 		/**
 		 * \brief Register already prepared plugin.
 		 * \param plugin the plugin
 		 */
-		virtual void registerPlugin(Plugin *plugin) = 0;
+		virtual void registerPlugin(Plugin<STRING_TYPE> *plugin) = 0;
 
 		/**
 		 * \brief Unregister plugin.
 		 * \param plugin the plugin
 		 */
-		virtual void unregisterPlugin(Plugin *plugin) = 0;
+		virtual void unregisterPlugin(Plugin<STRING_TYPE> *plugin) = 0;
 	};
 }

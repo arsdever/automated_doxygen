@@ -9,6 +9,7 @@ namespace ad
 	 * After serialization the objects can be deserialized from the data if they implement the interface **Deserializable**
 	 * \see Deserializable
 	 */
+	template <typename BYTE_ARRAY_TYPE>
 	class Serializable
 	{
 	public:
@@ -22,6 +23,6 @@ namespace ad
 		 * \return serialized object in ByteBuf
 		 * \see ByteBuf
 		 */
-		virtual ByteBuf* serialize() const = 0;
+		virtual BYTE_ARRAY_TYPE serialize() const = 0;
 	};
 }

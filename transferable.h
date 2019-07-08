@@ -11,6 +11,7 @@ namespace ad
 	 * It makes possible to serialize them in one place, transfer them and 
 	 * deserialize in another place
 	 */
-	class Transferable : public Serializable, public Deserializable
+	template <typename BYTE_ARRAY_TYPE>
+	class Transferable : public Serializable<BYTE_ARRAY_TYPE>, public Deserializable<BYTE_ARRAY_TYPE>
 	{};
 }
