@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28822.285
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lcd_base", "src\lcd_base\lcd_base.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "decorators", "src\deocrators\decorators.vcxproj", "{BA63D92D-8641-400B-8B80-3FEA7D634264}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lcd_core", "src\lcd_core\lcd_core.vcxproj", "{D36CDD3C-65A9-479E-87B3-344D02B81EDF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.ActiveCfg = Debug|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.Build.0 = Debug|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.ActiveCfg = Release|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.Build.0 = Release|x64
+		{BA63D92D-8641-400B-8B80-3FEA7D634264}.Debug|x64.ActiveCfg = Debug|x64
+		{BA63D92D-8641-400B-8B80-3FEA7D634264}.Debug|x64.Build.0 = Debug|x64
+		{BA63D92D-8641-400B-8B80-3FEA7D634264}.Release|x64.ActiveCfg = Release|x64
+		{BA63D92D-8641-400B-8B80-3FEA7D634264}.Release|x64.Build.0 = Release|x64
+		{D36CDD3C-65A9-479E-87B3-344D02B81EDF}.Debug|x64.ActiveCfg = Debug|x64
+		{D36CDD3C-65A9-479E-87B3-344D02B81EDF}.Debug|x64.Build.0 = Debug|x64
+		{D36CDD3C-65A9-479E-87B3-344D02B81EDF}.Release|x64.ActiveCfg = Release|x64
+		{D36CDD3C-65A9-479E-87B3-344D02B81EDF}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7459D228-6EF4-45F7-AE20-637D20770620}
+	EndGlobalSection
+EndGlobal
