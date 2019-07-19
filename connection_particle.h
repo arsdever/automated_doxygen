@@ -3,14 +3,14 @@
 
 namespace ad
 {
-	template <typename BYTE_ARRAY_TYPE>
-	class ConnectionParticle : public Transferable<BYTE_ARRAY_TYPE>
+	template <typename bytebuf_t>
+	class ConnectionParticle : public Transferable<bytebuf_t>
 	{
-		virtual BYTE_ARRAY_TYPE const& uri() const = 0;
-		virtual BYTE_ARRAY_TYPE const& host() const = 0;
-		virtual BYTE_ARRAY_TYPE const& request() const = 0;
-		virtual BYTE_ARRAY_TYPE const& response() const = 0;
-		virtual void setRequest(BYTE_ARRAY_TYPE const &request) = 0;
-		virtual void setResponse(BYTE_ARRAY_TYPE const &response) = 0;
+		virtual bytebuf_t const& uri() const = 0;
+		virtual bytebuf_t const& host() const = 0;
+		virtual bytebuf_t const& request() const = 0;
+		virtual bytebuf_t const& response() const = 0;
+		virtual void setRequest(bytebuf_t const &request) = 0;
+		virtual void setResponse(bytebuf_t const &response) = 0;
 	};
 }

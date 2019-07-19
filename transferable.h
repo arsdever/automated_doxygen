@@ -5,13 +5,13 @@
 namespace ad
 {
 	/**
-	 * \brief This interface used to implement transferable objects.
+	 * @brief This interface used to implement transferable objects.
 	 * 
 	 * That means, that this kind of objects can be serialized and deserialized.
 	 * It makes possible to serialize them in one place, transfer them and 
 	 * deserialize in another place
 	 */
-	template <typename BYTE_ARRAY_TYPE>
-	class Transferable : public Serializable<BYTE_ARRAY_TYPE>, public Deserializable<BYTE_ARRAY_TYPE>
+	template <typename bytebuf_t>
+	class Transferable : public Serializable<bytebuf_t>, public Deserializable<bytebuf_t>
 	{};
 }

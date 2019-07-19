@@ -1,18 +1,18 @@
 #pragma once
 namespace ad
 {
-	template <typename BYTE_ARRAY_TYPE>
+	template <typename bytebuf_t>
 	class ConnectionParticle;
 
-	template <typename BYTE_ARRAY_TYPE>
+	template <typename bytebuf_t>
 	class ConnectionPortal
 	{
 	public:
 		/**
-		 * \brief The destructor.
+		 * @brief The destructor.
 		 */
 		virtual ~ConnectionPortal() = default;
-		virtual void send(ConnectionParticle<BYTE_ARRAY_TYPE> &request) = 0;
-		virtual void receive(ConnectionParticle<BYTE_ARRAY_TYPE> &request) = 0;
+		virtual void send(ConnectionParticle<bytebuf_t> &request) = 0;
+		virtual void receive(ConnectionParticle<bytebuf_t> &request) = 0;
 	};
 }
