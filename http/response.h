@@ -24,7 +24,7 @@ namespace ad
             virtual void setHttpVersion(HttpVersion version) = 0;
             virtual void addHeader(bytebuf_t const &key, bytebuf_t const &value) = 0;
             virtual void setHeaders(map_t<bytebuf_t, bytebuf_t> const &headers) = 0;
-            virtual void setBody(bytebuf_t const &body, ResponseContentType type = ResponseContentType::TXT) = 0;
+            virtual void setBody(bytebuf_t const &body, ContentType type = ContentType::TXT) = 0;
 
             virtual ResponseStatus status() const = 0;
             virtual bytebuf_t body() const = 0;
