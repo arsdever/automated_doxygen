@@ -30,5 +30,12 @@ namespace ad
 		 * @param manager the manager
 		 */
 		virtual void setManager(PluginManager<string_t> *manager) = 0;
+
+		/**
+		 * @brief This is a slot and it must be called whenever a new plugin was loaded by the PluginManager.
+		 * 
+		 * @param plugin the newly loaded plugin
+		 */
+		virtual void onPluginLoaded(Plugin<string_t> *plugin) = 0;
 	};
 }
