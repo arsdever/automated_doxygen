@@ -3,9 +3,14 @@
 
 namespace ad
 {
-	template <typename bytebuf_t>
-	class ConnectionParticle : public Transferable<bytebuf_t>
+	template <typename BYTEBUF_TYPE>
+	class ConnectionParticle : public Transferable<BYTEBUF_TYPE>
 	{
+	public:
+		typedef BYTEBUF_TYPE bytebuf_t;
+		typedef Transferable<bytebuf_t> base_t;
+
+	public:
 		virtual bytebuf_t const& uri() const = 0;
 		virtual bytebuf_t const& host() const = 0;
 		virtual bytebuf_t const& request() const = 0;

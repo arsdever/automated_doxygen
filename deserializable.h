@@ -6,12 +6,15 @@ namespace ad
 	 * 
 	 * Objects can be deserialized from the data serialized using the interface Serializable.
 	 * It also is possible to deserialize from custom defined data (if such implementation exists).
-	 * @tparam bytebuf_t the output type of serialization
+	 * @tparam BYTEBUF_TYPE the output type of serialization
 	 * @see Serializable
 	 */
-	template <typename bytebuf_t>
+	template <typename BYTEBUF_TYPE>
 	class Deserializable
 	{
+	public:
+		typedef BYTEBUF_TYPE bytebuf_t;
+
 	public:
 		/**
 		 * @brief The destructor.

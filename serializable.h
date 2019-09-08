@@ -5,12 +5,15 @@ namespace ad
 	 * @brief This interface is used to serialize the objects.
 	 * 
 	 * After serialization the objects can be deserialized from the data if they implement the interface **Deserializable**
-	 * @tparam bytebuf_t the output type of serialization
+	 * @tparam BYTEBUF_TYPE the output type of serialization
 	 * @see Deserializable
 	 */
-	template <typename bytebuf_t>
+	template <typename BYTEBUF_TYPE>
 	class Serializable
 	{
+	public:
+		typedef BYTEBUF_TYPE bytebuf_t;
+		
 	public:
 		/**
 		 * @brief The destructor.

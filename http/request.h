@@ -10,13 +10,18 @@ namespace ad
         /**
          * @brief This is an interface for HTTP request.
          * 
-         * @tparam bytebuf_t the byte container type
-         * @tparam map_t the map type used to store the headers
+         * @tparam BYTEBUF_TYPE the byte container type
+         * @tparam MAP_TYPE the map type used to store the headers
          * @see Response
          */
-        template<typename bytebuf_t, template<typename, typename> typename map_t>
-        class Request : public Transferable<bytebuf_t>
+        template<typename BYTEBUF_TYPE, typename MAP_TYPE>
+        class Request : public Transferable<BYTEBUF_TYPE>
         {
+        public:
+            typedef BYTEBUF_TYPE bytebuf_t;
+            typedef MAP_TYPE map_t;
+            typedef Transferable<bytebuf_t> base_t;
+
         public:
             /**
              * @brief The destructor.
@@ -37,7 +42,7 @@ namespace ad
              * 
              * @param headers the new headers
              */
-            virtual void setHeaders(map_t<bytebuf_t, bytebuf_t> const &headers) = 0;
+            virtual void setHeaders(map_t const &headers) = 0;
 
             /**
              * @brief Set the request body.
@@ -82,7 +87,7 @@ namespace ad
              * @return the request headers map
              * @see header 
              */
-            virtual map_t<bytebuf_t, bytebuf_t> headers() const = 0;
+            virtual map_t headers() const = 0;
 
             /**
              * @brief Get the request's http version.

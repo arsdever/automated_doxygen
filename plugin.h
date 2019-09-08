@@ -1,15 +1,18 @@
 #pragma once
 namespace ad
 {
-	template <typename string_t>
+	template <typename STRING_TYPE>
 	class PluginManager;
 
 	/**
 	 * @brief This interface is used to create plugins
 	 */
-	template <typename string_t>
+	template <typename STRING_TYPE>
 	class Plugin
 	{
+	public:
+		typedef STRING_TYPE string_t;
+
 	public:
 		/**
 		 * @brief The destructor.
@@ -30,12 +33,5 @@ namespace ad
 		 * @param manager the manager
 		 */
 		virtual void setManager(PluginManager<string_t> *manager) = 0;
-
-		/**
-		 * @brief This is a slot and it must be called whenever a new plugin was loaded by the PluginManager.
-		 * 
-		 * @param plugin the newly loaded plugin
-		 */
-		virtual void onPluginLoaded(Plugin<string_t> *plugin) = 0;
 	};
 }

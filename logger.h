@@ -12,15 +12,43 @@ namespace ad
 		Debug = 1,
 		Info = 2,
 		Warn = 3,
-		Error = 4
+		Error = 4,
+		All = Trace | Debug | Info | Warn | Error
 	};
 
 	/**
 	 * @brief This is the simple interface to interact with the Logger type objects.
 	 */
-	template <typename string_t, typename map_t>
-	class Logger : public Plugin<string_t>
+	template <typename STRING_TYPE, typename MAP_TYPE>
+	class Logger : public Plugin<STRING_TYPE>
 	{
+	public:
+		typedef STRING_TYPE string_t;
+		typedef MAP_TYPE map_t;
+		typedef Plugin<string_t> base_t;
+
+	public:
+		static LogLevel logLevelFromString(string_t const &str)
+		{
+		#ifdef LOG_LEVEL_FROM_STRING_IMPLEMENTATION
+			LOG_LEVEL_FROM_STRING_IMPLEMENTATION
+		#else
+			if(str == "trace")
+				return Trace;
+			else if(str == "debug")
+				return Debug;
+			else if(str == "info")
+				return Info;
+			else if(str == "warn")
+				return Warn;
+			else if(str == "error")
+				return Error;
+			else if(str == "all")
+				return All;
+			else return Warn;
+		#endif
+		}
+	
 	public:
 		/**
 		 * @brief Prints the log *message* with the logging category *level*.

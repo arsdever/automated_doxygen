@@ -1,7 +1,7 @@
 ﻿#pragma once
 namespace ad
 {
-	template <typename string_t>
+	template <typename STRING_TYPE>
 	class Plugin;
 
 	/**
@@ -9,9 +9,12 @@ namespace ad
 	 * 
 	 * It makes possible to load, register preloaded, unregister and unload plugins.
 	 */
-	template <typename string_t>
+	template <typename STRING_TYPE>
 	class PluginManager
 	{
+	public:
+		typedef STRING_TYPE string_t;
+
 	public:
 		/**
 		 * @brief The destructor.

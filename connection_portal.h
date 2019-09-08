@@ -1,12 +1,15 @@
 #pragma once
 namespace ad
 {
-	template <typename bytebuf_t>
+	template <typename BYTEBUF_TYPE>
 	class ConnectionParticle;
 
-	template <typename bytebuf_t>
+	template <typename BYTEBUF_TYPE>
 	class ConnectionPortal
 	{
+	public:
+		typedef BYTEBUF_TYPE bytebuf_t;
+		
 	public:
 		/**
 		 * @brief The destructor.
