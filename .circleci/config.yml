@@ -1,10 +1,11 @@
 version: 1.0
 jobs:
-        machine:
-                image: ubuntu-1604:201903-01
-                steps:
-                        - git clone git@github.com:opensalad/interfaces.git ../
-                        - checkout
-                        - run:
-                                name: "Making project"
-                                command: make
+  build:
+    machine:
+      image: ubuntu-1604:201903-01
+        steps:
+          - git clone git@github.com:opensalad/interfaces.git ../
+          - checkout
+          - run:
+              name: "Making project"
+              command: make
