@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - run:
-          command: sudo apt-get install git
+          command: apt-get install git
       - checkout
 
       - run:
