@@ -1,31 +1,33 @@
 #pragma once
 
+#include <factory.h>
+#include <logger.h>
+
+#include <QMap>
+#include <QString>
+#include <QVariant>
+#include <QList>
+
 namespace ad
 {
-	/**
-	 * @brief This interface is used for an abstraction of instance creation mechanisms.
-	 * 
-	 * To use it simply derive from and implement the #Factory::getInstance()
-	 * pure virtual member function, which constructs an instance from specified type
-	 */
-	template <typename BYTEBUF_TYPE>
-	class Factory
-	{
-	public:
-		typedef BYTEBUF_TYPE bytebuf_t;
+    class LoggerFactory : public Factory<QByteArray>
+    {
+    public:
+        LoggerFactory();
 
-	public:
-		/**
-		 * @brief The destructor.
-		 */
-		virtual ~Factory() = default;
+        enum LoggerType
+        {
+            FileLoggerType,
+            StreamLoggerType,
+            InvalidLoggerType
+        };
 
 		/**
 		 * @brief Get instance for specified configuration.
 		 * @param type specifies the instance general identifier
 		 * @return opaque pointer to the requested instance
 		 */
-		virtual void* getInstance() const = 0;
+		void* getInstance() const override;
 
 		/**
 		 * @brief Configure the factory.
@@ -36,7 +38,7 @@ namespace ad
 		 * @param configuration the configuration string
 		 * @see configureWithFile
 		 */
-		virtual void configure(bytebuf_t const &configuration) = 0;
+		void configure(bytebuf_t const &configuration) override;
 
 		/**
 		 * @brief Configure the factory using configuration file
@@ -47,6 +49,15 @@ namespace ad
 		 * @param path_to_config_file the path to the configuration file
 		 * @see configure
 		 */
-		virtual void configureWithFile(bytebuf_t const &path_to_config_file) = 0;
-	};
+		void configureWithFile(bytebuf_t const &path_to_config_file) override;
+
+    private:
+        void* getFileLogger() const;
+        void* getStreamLogger() const;
+
+    private:
+        LoggerType __output_type;
+        QMap<QString, QVariant> __properties;
+        mutable QList<void*> __loggers;
+    };
 }
