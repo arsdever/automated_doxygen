@@ -10,6 +10,8 @@ jobs:
     working_directory: $BASE_DIR
 
     steps:
+      - run:
+          command: sudo apt-get install git
       - checkout
 
       - run:
