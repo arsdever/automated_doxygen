@@ -7,18 +7,7 @@ jobs:
     name: "First Job"
     runs-on: ubuntu-latest
     steps:
-    - name: "Greeting 1"
-      run: echo Hello from first step.
-  parallel_job:
-    name: "Parallel job"
-    runs-on: ubuntu-latest
-    steps:
-    - name: "Greeting 2"
-      run: echo Hello from parallel step.
-  dependent_job:
-    name: "dependent job"
-    needs: my_first_job
-    runs-on: ubuntu-latest
-    steps:
-    - name: "Greeting 3"
-      run: echo Hello from 3 step.
+    - name: "Install git"
+      run: apt-get install git
+    - name: "Clone interfaces repository"
+      run: git clone git@github.com:opensalad/interfaces
