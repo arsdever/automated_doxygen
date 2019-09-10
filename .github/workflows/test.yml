@@ -1,0 +1,12 @@
+name: "Make a library"
+on:
+  push:
+    branches: master
+jobs:
+  my_first_job:
+    name: "First Job"
+  parallel_job:
+    name: "Parallel job"
+  dependent_job:
+    name: "dependent job"
+    needs: my_first_job
