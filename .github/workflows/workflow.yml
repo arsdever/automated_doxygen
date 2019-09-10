@@ -10,4 +10,4 @@ jobs:
     - name: "Install git"
       run: sudo apt-get install git
     - name: "Clone interfaces repository"
-      run: git clone git@github.com:opensalad/interfaces
+      run: git clone https://github.com/opensalad/interfaces
