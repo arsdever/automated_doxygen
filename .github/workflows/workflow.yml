@@ -1,8 +1,12 @@
-steps:
-- uses: actions/checkout@master
-- uses: codecov/codecov-action@v1.0.2
-  with:
-    token: ${{secrets.CODECOV_TOKEN}} #required
-    file: ./coverage.xml #optional
-    flags: unittests #optional
-    name: codecov-umbrella #optional
+name: "Make a library"
+on:
+  push:
+    branches: master
+jobs:
+  my_first_job:
+    name: "First Job"
+  parallel_job:
+    name: "Parallel job"
+  dependent_job:
+    name: "dependent job"
+    needs: my_first_job
