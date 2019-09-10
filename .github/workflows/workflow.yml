@@ -8,6 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: "Install git"
-      run: apt-get install git
+      run: sudo apt-get install git
     - name: "Clone interfaces repository"
       run: git clone git@github.com:opensalad/interfaces
