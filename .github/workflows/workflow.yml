@@ -1,13 +1,16 @@
-name: "Make a library"
+name: "Build, test and release"
 on:
   push:
     branches: master
 jobs:
-  my_first_job:
+  build_test_release:
     name: "First Job"
     runs-on: ubuntu-latest
     steps:
-    - name: "Install git"
-      run: sudo apt-get install git
-    - name: "Clone interfaces repository"
-      run: git clone https://github.com/opensalad/interfaces
+    - uses: actions/checkout@master
+    - uses: codecov/codecov-action@v1.0.2
+      with:
+        token: ${{secrets.CODECOV_TOKEN}}
+    - run: |
+        sudo apt-get install git
+        git clone https://github.com/opensalad/interfaces
