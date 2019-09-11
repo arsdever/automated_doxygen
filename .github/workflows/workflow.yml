@@ -4,13 +4,11 @@ on:
     branches: master
 jobs:
   build_test_release:
-    name: "First Job"
+    name: "Test code coverage"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - uses: codecov/codecov-action@v1.0.2
-      with:
-        token: ${{secrets.CODECOV_TOKEN}}
     - run: |
-        sudo apt-get install git
-        git clone https://github.com/opensalad/interfaces
+        sudo apt-get install gcc
+        ls
+        
