@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - uses: actions/checkout@covreport
-    - run: |
+    - run: 
         sudo apt-get install gcc
         qmake
         make
