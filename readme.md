@@ -1,6 +1,8 @@
-# Logger ![](https://github.com/arsdever/automated_doxygen/workflows/test/badge.svg)
+# Logger 
 
 This is a simple logger implementation of [opensalad's](https://github.com/opensalad) [logger interface](https://github.com/opensalad/interfaces) based on [Qt](https://github.com/qt) library.
+
+![](https://github.com/arsdever/automated_doxygen/workflows/test/badge.svg)
 
 ## Usage
 
