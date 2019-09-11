@@ -7,6 +7,7 @@ TARGET = ./logger
 INCLUDEPATH += ../interfaces
 DEFINES += QT_DEPRECATED_WARNINGS
 QT += core
+QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
 
 HEADERS += abstract_logger.h \
             file_logger.h \
