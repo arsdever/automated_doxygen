@@ -3,6 +3,7 @@
 This is a simple logger implementation of [opensalad's](https://github.com/opensalad) [logger interface](https://github.com/opensalad/interfaces) based on [Qt](https://github.com/qt) library.
 
 ![](https://github.com/arsdever/automated_doxygen/workflows/Build%2C%20test%20and%20release/badge.svg)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a09d65576b23439893f431ab58a5a44a)](https://www.codacy.com/manual/arsen.gharagyozyn.96/automated_doxygen?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=arsdever/automated_doxygen&amp;utm_campaign=Badge_Grade)
 
 ## Usage
 
