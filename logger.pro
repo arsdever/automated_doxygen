@@ -6,6 +6,7 @@ TEMPLATE = lib
 TARGET = ./logger
 INCLUDEPATH += ../interfaces
 DEFINES += QT_DEPRECATED_WARNINGS
+LIBS += -lgcov
 QT += core
 QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
 
