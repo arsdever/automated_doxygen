@@ -10,5 +10,13 @@ jobs:
     - uses: actions/checkout@master
     - run: |
         sudo apt-get install gcc
-        ls
-        
+        qmake
+        make
+        make run
+        gcov *.cpp
+        lcov -c -d . -o main.info
+        genhtml main.info -o report
+        git checkout -b covreport
+        git add report
+        git commit -m "Coverage report updating"
+        git push
