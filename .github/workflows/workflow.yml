@@ -7,16 +7,14 @@ jobs:
     name: "Test code coverage"
     runs-on: ubuntu-latest
     steps:
+    - name: "Check git existance"
+      run: git || sudo apt-get install git
     - name: "Getting the sources"
       run: |
-        mkdir ~/sources/
-        cd ~/sources/      
-      uses: actions/checkout@master
+        git clone --single-branch --branch ${{github.ref}} https://github.com/${{github.repository}} ~/sources/
     - name: "Getting the tests"
       run: |
-        mkdir ~/test/
-        cd ~/test/
-      uses: actions/checkout@unit-tests
+        git clone --single-branch --branch unit-tests https://github.com/arsdever/${{github.repository}} ~/tests/
     - run: |
         sudo apt-get autoremove gcc
         sudo apt-get install gcc
