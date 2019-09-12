@@ -7,17 +7,22 @@ jobs:
     name: "Test code coverage"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - uses: actions/checkout@covreport
-    - run: 
+    - uses: actions/checkout@master src/
+    - uses: actions/checkout@unit-tests tests/
+    - run: |
+        sudo apt-get autoremove gcc
         sudo apt-get install gcc
-        qmake
+        sudo apt-get install qtbase5-dev
+        sudo apt-get install curl
+        sudo apt-get install jq
+        qmake app.pro
         make
-        make run
+        qmake logger.pro
+        make
+        ./test
         gcov *.cpp
-        lcov -c -d . -o main.info
-        genhtml main.info -o report
-        git checkout -b covreport
-        git add report
-        git commit -m "Coverage report updating"
-        git push
+        gcovr --xml -o report.xml
+        LATEST_VERSION="$(curl -Ls https://api.bintray.com/packages/codacy/Binaries/codacy-coverage-reporter/versions/_latest | jq -r .name)"
+        curl -Ls -o codacy-coverage-reporter "https://dl.bintray.com/codacy/Binaries/${LATEST_VERSION}/codacy-coverage-reporter-linux"
+        chmod +x codacy-coverage-reporter
+        ./codacy-coverage-reporter report -l CPP -r report.xml
