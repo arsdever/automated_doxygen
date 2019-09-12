@@ -7,8 +7,16 @@ jobs:
     name: "Test code coverage"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master src/
-    - uses: actions/checkout@unit-tests tests/
+    - name: "Getting the sources"
+      run: |
+        mkdir ~/sources/
+        cd ~/sources/      
+      uses: actions/checkout@master
+    - name: "Getting the tests"
+      run: |
+        mkdir ~/test/
+        cd ~/test/
+      uses: actions/checkout@unit-tests
     - run: |
         sudo apt-get autoremove gcc
         sudo apt-get install gcc
