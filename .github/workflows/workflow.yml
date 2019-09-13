@@ -5,32 +5,12 @@ on:
 jobs:
   build_test_release:
     name: "Test code coverage"
-    runs-on: ubuntu-latest
+    runs-on: docker:vookimedlo/ubuntu-qt
     steps:
-    - name: "Check git existance"
-      run: git || sudo apt-get install git
-    - name: "Getting the sources"
+    - uses: actions/checkout@master
+    - uses: actions/checkout@unit-tests
+    - name: "Build and test"
       run: |
-        git clone --single-branch --branch master https://github.com/${{github.repository}} ~/sources/
-    - name: "Getting the tests"
-      run: |
-        git clone --single-branch --branch unit-tests https://github.com/${{github.repository}} ~/tests/
-    - name: "Install prerequests"
-      run: |
-        sudo apt-get autoremove gcc
-        sudo apt-get install gcc
-        sudo apt-get install qt5-default
-        sudo apt-get install curl
-        sudo apt-get install jq
-        sudo apt-get install net-tools
-    - name: "Build the targets"
-      run: |
-        cd ~/sources/ && qmake && make
-        cd ~/tests/ && qmake && make
-        #./test
-        #gcov *.cpp
-        #gcovr --xml -o report.xml
-        #LATEST_VERSION="$(curl -Ls https://api.bintray.com/packages/codacy/Binaries/codacy-coverage-reporter/versions/_latest | jq -r .name)"
-        #curl -Ls -o codacy-coverage-reporter "https://dl.bintray.com/codacy/Binaries/${LATEST_VERSION}/codacy-coverage-reporter-linux"
-        #chmod +x codacy-coverage-reporter
-        #./codacy-coverage-reporter report -l CPP -r report.xml
+        qmake
+        make
+        ./test
