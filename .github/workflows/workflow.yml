@@ -25,16 +25,8 @@ jobs:
         sudo apt-get install net-tools
     - name: "Build the targets"
       run: |
-        cd ~
-        ls -al
-        cd ~/sources/
-        ls -al
-        qmake
-        make
-        cd ~/tests/
-        ls -al
-        qmake
-        make
+        cd ~/sources/ && qmake && make
+        cd ~/tests/ && qmake && make
         #./test
         #gcov *.cpp
         #gcovr --xml -o report.xml
