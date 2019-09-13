@@ -11,6 +11,15 @@ jobs:
     - uses: actions/checkout@unit-tests
     - name: "Build and test"
       run: |
+        sudo apt-get install curl
+        sudo apt-get install jq
+        sudo apt-get install gcovr
         qmake
         make
         ./test
+        gcov *.cpp
+        gcovr --xml -o report.xml
+        LATEST_VERSION="$(curl -Ls https://api.bintray.com/packages/codacy/Binaries/codacy-coverage-reporter/versions/_latest | jq -r .name)"
+        curl -Ls -o codacy-coverage-reporter "https://dl.bintray.com/codacy/Binaries/${LATEST_VERSION}/codacy-coverage-reporter-linux"
+        chmod +x codacy-coverage-reporter
+        ./codacy-coverage-reporter report -l CPP -r report.xml
