@@ -22,12 +22,17 @@ jobs:
         sudo apt-get install qt5-default
         sudo apt-get install curl
         sudo apt-get install jq
+        sudo apt-get install net-tools
     - name: "Build the targets"
       run: |
+        cd ~
+        ls -al
         cd ~/sources/
+        ls -al
         qmake
         make
         cd ~/tests/
+        ls -al
         qmake
         make
         #./test
