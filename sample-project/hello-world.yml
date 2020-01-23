@@ -18,3 +18,6 @@ server:
     timeZone: UTC
     appenders:
       - type: console
+  applicationConnectors:
+    - type: http
+      port: 7007
